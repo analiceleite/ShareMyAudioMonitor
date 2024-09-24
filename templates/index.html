@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nível de Áudio</title>
+    <style>
+      #volume-bar {
+        width: 100%;
+        background-color: #ddd;
+      }
+      #volume-level {
+        height: 30px;
+        background-color: #4caf50;
+        width: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Nível de Áudio em Tempo Real</h1>
+    <h2>
+      Dispositivo Selecionado:
+      <span id="selected-device">{{ selected_device }}</span>
+    </h2>
+
+    <h3>Selecionar Dispositivo:</h3>
+    <ul>
+      {% for device in devices %}
+      <li>
+        <button onclick="selectDevice('{{ device }}')">
+          Selecionar Dispositivo {{ device }}
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div id="volume-bar">
+      <div id="volume-level"></div>
+    </div>
+
+    <script>
+      function updateVolume() {
+        fetch('/get_volume')
+          .then(response => response.json())
+          .then(data => {
+            const volume = Math.min(data.volume, 10); // Limitar o volume a 10
+            const width = (volume / 10) * 100; // Calcular a largura da barra
+            document.getElementById('volume-level').style.width = width + '%';
+          })
+          .catch(error => console.error('Erro ao obter volume:', error)); // Adicionando tratamento de erro
+      }
+
+      function selectDevice(deviceId) {
+        fetch(`/set_device/${deviceId}`) // Corrigido para usar template literals corretamente
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById('selected-device').innerText = deviceId;
+            } else {
+              console.error('Erro ao selecionar dispositivo:', data.message); // Adicionando tratamento de erro
+            }
+          })
+          .catch(error => console.error('Erro ao selecionar dispositivo:', error)); // Tratamento de erro
+      }
+
+      setInterval(updateVolume, 500); // Atualiza a cada 0.5 segundos
+    </script>
+  </body>
+</html>
