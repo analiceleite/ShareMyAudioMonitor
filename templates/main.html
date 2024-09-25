@@ -1,317 +1,440 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="static/assets/logo.png" type="image/x-icon">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="static/assets/logo.png"
+      type="image/x-icon"
+    />
     <title>Audio Share</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      body {
+        background-color: #333;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #444;
+        padding: 10px;
+        position: relative;
+      }
+
+      .navbar h1 {
+        margin-left: 10px;
+      }
+
+      .navbar img {
+        height: 30px;
+        width: 30px;
+      }
+
+      .container {
+        display: flex;
+        width: 100%;
+        flex: 1;
+      }
+
+      .scrollable-left {
+        width: 50%;
+        overflow-y: auto;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .title_01 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2em;
+        color: #ffba08;
+        font-weight: bold;
+      }
+
+      .title_02 {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      #volume-bar-container {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #volume-indicators {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-right: 10px;
+        height: 80vh;
+      }
+
+      .indicator {
+        height: 20px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        color: #ddd;
+      }
+
+      #volume-bar {
+        width: 30px;
+        height: 90%;
+        background-color: #ddd;
+        display: flex;
+        align-items: flex-end;
+        border-radius: 5px;
+      }
+
+      #volume-level {
+        width: 100%;
+        background-color: #4caf50;
+        height: 0;
+        border-radius: 5px;
+        transition: height 0.3s ease;
+      }
+
+      .device-list {
+        overflow-y: auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+      }
+
+      ul li {
+        margin-bottom: 10px;
+      }
+
+      button,
+      select {
+        background-color: #555;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        width: 90%;
+        text-align: left;
+        font-size: 16px;
+        border-radius: 5px;
+      }
+
+      button:hover {
+        background-color: #777;
+      }
+
+      select:hover {
+        background-color: #777;
+      }
+
+      h2 {
+        margin: 0 0 20px;
+      }
+
+      .active {
+        background-color: #4caf50;
+      }
+
+      .stop-capture {
+        display: none;
+        color: white;
+        background-color: red;
+        margin-bottom: -10px;
+        margin-top: 20px;
+      }
+
+      .stop-capture:hover {
+        background-color: rgb(193, 0, 0);
+      }
+
+      footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #444;
+        color: #fff;
+      }
+
+      ::-webkit-scrollbar {
+        width: 12px;
+        background-color: #333;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #555;
+        border-radius: 10px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #777;
+      }
+
+      /* Responsividade para celulares */
+      @media (max-width: 768px) {
         body {
-            background-color: #333;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+          flex-direction: column;
         }
 
         .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #444;
-            padding: 10px;
-            position: relative;
+          padding: 5px;
         }
 
         .navbar h1 {
-            margin-left: 10px;
-        }
-
-        .navbar img {
-            height: 30px;
-            width: 30px;
+          font-size: 1.2em;
         }
 
         .container {
-            display: flex;
-            width: 100%;
-            flex: 1;
+          flex-direction: column;
         }
 
         .scrollable-left {
-            width: 50%;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .title_01 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2em;
-            color: #ffba08;
-            font-weight: bold;
-        }
-
-        .title_02 {
-            margin-bottom: 10px;
+          width: 100%;
+          padding: 20px;
         }
 
         #volume-bar-container {
-            width: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+          margin-top: 30px;
+          margin-bottom: 30px;
+          width: 100%;
+          height: 50vh;
         }
 
         #volume-indicators {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin-right: 10px;
-            height: 80vh;
-        }
-
-        .indicator {
-            height: 20px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            color: #ddd;
+          isplay: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          margin-right: 10px;
+          height: 45vh;
         }
 
         #volume-bar {
-            width: 30px;
-            height: 90%;
-            background-color: #ddd;
-            display: flex;
-            align-items: flex-end;
-            border-radius: 5px;
+          width: 20px;
         }
 
-        #volume-level {
-            width: 100%;
-            background-color: #4caf50;
-            height: 0;
-            border-radius: 5px;
-            transition: height 0.3s ease;
+        .title_01 {
+          font-size: 1.5em;
         }
 
-        .device-list {
-            overflow-y: auto;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            width: 100%;
+        .title_02 {
+          txt-align: center;
+          font-size: 1.5em;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        ul li {
-            margin-bottom: 10px;
-        }
-
-        button, select {
-            background-color: #555;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            width: 90%;
-            text-align: left;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #777;
-        }
-
-        select:hover {
-            background-color: #777;
+        button,
+        select {
+          font-size: 14px;
+          padding: 8px;
         }
 
         h2 {
-            margin: 0 0 20px;
-        }
-
-        .active {
-            background-color: #4caf50;
+          font-size: 1em;
         }
 
         .stop-capture {
-            display: none;
-            color: white;
-            background-color: red;
-            margin-bottom: -10px;
-            margin-top: 20px;
+          font-size: 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .scrollable-left {
+          padding: 10px;
         }
 
-        .stop-capture:hover {
-            background-color: rgb(193, 0, 0);
+        #volume-indicators {
+          height: 50vh;
         }
 
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #444;
-            color: #fff;
+        #volume-bar {
+          width: 15px;
         }
 
-        ::-webkit-scrollbar {
-            width: 12px;
-            background-color: #333;
-            border-radius: 10px;
+        button,
+        select {
+          font-size: 12px;
+          padding: 6px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background-color: #555;
-            border-radius: 10px;
+        h2 {
+          font-size: 0.9em;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: #777;
+        .title_01 {
+          margin-top: 15px;
+          font-size: 1.2em;
         }
+
+        .title_02 {
+          text-align: center;
+          font-size: 1.2em;
+        }
+
+        .stop-capture {
+          font-size: 12px;
+        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="navbar">
-        <img src="static/assets/logo.png" alt="Ícone de Som">
-        <h1>Audio Share</h1>
+      <img src="static/assets/logo.png" alt="Ícone de Som" />
+      <h1>Audio Share</h1>
     </div>
 
     <div class="container">
-        <div class="scrollable-left">
-            <h1 class="title_01">Nível de Áudio em Tempo Real</h1>
+      <div class="scrollable-left">
+        <h1 class="title_01">Nível de Áudio em Tempo Real</h1>
 
-            <h2>Dispositivo Selecionado: <span id="selected-device">{{ selected_device }}</span></h2>
+        <h2>
+          Dispositivo Selecionado:
+          <span id="selected-device">{{ selected_device }}</span>
+        </h2>
 
-            <h3 class="title_02">Selecionar Dispositivo:</h3>
+        <h3 class="title_02">Selecionar Dispositivo:</h3>
 
-            <button id="stop-capture-btn" class="stop-capture">Parar Captação</button>
+        <button id="stop-capture-btn" class="stop-capture">
+          Parar Captação
+        </button>
 
-            <ul class="device-list">
-                {% for device in devices %}
-                <li>
-                    <button id="device-{{ device.id }}" onclick="selectDevice('{{ device.id }}')">{{ device.name }}</button>
-                </li>
-                {% endfor %}
-            </ul>
+        <ul class="device-list">
+          {% for device in devices %}
+          <li>
+            <button
+              id="device-{{ device.id }}"
+              onclick="selectDevice('{{ device.id }}')"
+            >
+              {{ device.name }}
+            </button>
+          </li>
+          {% endfor %}
+        </ul>
 
-            <!-- Novo select para o tempo de atualização do volume -->
-            <h3 class="title_02" style="margin-bottom: 30px;">Configurar Tempo de Atualização do Volume:</h3>
-            <select id="update-interval" onchange="updateVolumeInterval()">
-                <option value="100">100 ms</option>
-                <option value="500">500 ms</option>
-                <option value="1000">1 s</option>
-                <option value="2000">2 s</option>
-                <option value="5000">5 s</option>
-            </select>
+        <!-- Novo select para o tempo de atualização do volume -->
+        <h3 class="title_02" style="margin-bottom: 30px">
+          Configurar Tempo de Atualização do Volume:
+        </h3>
+        <select id="update-interval" onchange="updateVolumeInterval()">
+          <option value="100">100 ms</option>
+          <option value="500">500 ms</option>
+          <option value="1000">1 s</option>
+          <option value="2000">2 s</option>
+          <option value="5000">5 s</option>
+        </select>
+      </div>
 
+      <div id="volume-bar-container">
+        <div id="volume-indicators">
+          <div class="indicator">100</div>
+          <div class="indicator">80</div>
+          <div class="indicator">60</div>
+          <div class="indicator">40</div>
+          <div class="indicator">20</div>
+          <div class="indicator">0</div>
         </div>
-
-        <div id="volume-bar-container">
-            <div id="volume-indicators">
-                <div class="indicator">100</div>
-                <div class="indicator">80</div>
-                <div class="indicator">60</div>
-                <div class="indicator">40</div>
-                <div class="indicator">20</div>
-                <div class="indicator">0</div>
-            </div>
-            <div id="volume-bar">
-                <div id="volume-level"></div>
-            </div>
+        <div id="volume-bar">
+          <div id="volume-level"></div>
         </div>
+      </div>
     </div>
 
     <footer>
-        <p>Audio Share - Comunidade Cristã Palavra da Vida</p>
+      <p>Audio Share - Comunidade Cristã Palavra da Vida</p>
     </footer>
 
     <script>
-        let volumeUpdateInterval = 500; // Valor padrão de 500 ms
+      let volumeUpdateInterval = 500; // Valor padrão de 500 ms
 
-        function updateVolume() {
-            fetch('/get_volume')
-                .then(response => response.json())
-                .then(data => {
-                    const volume = Math.min(data.volume, 10);
-                    const height = (volume / 10) * 100;
-                    const volumeLevel = document.getElementById('volume-level');
-                    volumeLevel.style.height = height + '%';
+      function updateVolume() {
+        fetch("/get_volume")
+          .then((response) => response.json())
+          .then((data) => {
+            const volume = Math.min(data.volume, 10);
+            const height = (volume / 10) * 100;
+            const volumeLevel = document.getElementById("volume-level");
+            volumeLevel.style.height = height + "%";
 
-                    if (height <= 80) {
-                        volumeLevel.style.backgroundColor = '#4caf50'; // Verde
-                    } else if (height <= 95) {
-                        volumeLevel.style.backgroundColor = '#ffeb3b'; // Amarelo
-                    } else {
-                        volumeLevel.style.backgroundColor = '#f44336'; // Vermelho
-                    }
-                });
-        }
+            if (height <= 80) {
+              volumeLevel.style.backgroundColor = "#4caf50"; // Verde
+            } else if (height <= 95) {
+              volumeLevel.style.backgroundColor = "#ffeb3b"; // Amarelo
+            } else {
+              volumeLevel.style.backgroundColor = "#f44336"; // Vermelho
+            }
+          });
+      }
 
-        function selectDevice(deviceId) {
-            fetch(`/set_device/${deviceId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('selected-device').innerText = deviceId;
-                        document.getElementById('stop-capture-btn').style.display = 'block';
+      function selectDevice(deviceId) {
+        fetch(`/set_device/${deviceId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("selected-device").innerText = deviceId;
+              document.getElementById("stop-capture-btn").style.display =
+                "block";
 
-                        const buttons = document.querySelectorAll('.device-list button');
-                        buttons.forEach(button => {
-                            button.classList.remove('active');
-                        });
+              const buttons = document.querySelectorAll(".device-list button");
+              buttons.forEach((button) => {
+                button.classList.remove("active");
+              });
 
-                        document.getElementById(`device-${deviceId}`).classList.add('active');
-                    }
-                });
-        }
+              document
+                .getElementById(`device-${deviceId}`)
+                .classList.add("active");
+            }
+          });
+      }
 
-        document.getElementById('stop-capture-btn').addEventListener('click', function () {
-            fetch('/stop_capture', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log("Captação parada com sucesso!");
-                        this.style.display = 'none';
+      document
+        .getElementById("stop-capture-btn")
+        .addEventListener("click", function () {
+          fetch("/stop_capture", { method: "POST" })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                console.log("Captação parada com sucesso!");
+                this.style.display = "none";
 
-                        const activeButton = document.querySelector('.device-list button.active');
-                        if (activeButton) {
-                            activeButton.classList.remove('active');
-                        }
-                    }
-                });
+                const activeButton = document.querySelector(
+                  ".device-list button.active"
+                );
+                if (activeButton) {
+                  activeButton.classList.remove("active");
+                }
+              }
+            });
         });
 
-        function updateVolumeInterval() {
-            const selectedValue = document.getElementById('update-interval').value;
-            volumeUpdateInterval = parseInt(selectedValue);
-            clearInterval(volumeUpdate);
-            setInterval(updateVolume, volumeUpdateInterval);
-        }
-
-        // Inicia o intervalo de atualização do volume com o valor padrão
+      function updateVolumeInterval() {
+        const selectedValue = document.getElementById("update-interval").value;
+        volumeUpdateInterval = parseInt(selectedValue);
+        clearInterval(volumeUpdate);
         setInterval(updateVolume, volumeUpdateInterval);
+      }
+
+      // Inicia o intervalo de atualização do volume com o valor padrão
+      setInterval(updateVolume, volumeUpdateInterval);
     </script>
-
-</body>
-
+  </body>
 </html>

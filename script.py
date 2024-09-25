@@ -7,7 +7,7 @@ import time
 app = Flask(__name__)
 volume_level = 0
 selected_device = None
-stream = None  # Variável global para o stream
+stream = None 
 
 def audio_callback(indata, frames, time, status):
     global volume_level
@@ -25,11 +25,23 @@ def audio_stream():
 @app.route('/')
 def index():
     devices = sd.query_devices()
-    input_devices = [
-        {'id': i, 'name': device['name']}
-        for i, device in enumerate(devices) if device['max_input_channels'] > 0
-    ]
-    return render_template('main.html', devices=input_devices, selected_device=selected_device if selected_device is not None else "Nenhum")
+    unique_input_devices = []
+    added_device_names = set()
+
+    for i, device in enumerate(devices):
+        if device['max_input_channels'] > 0:  # Somente dispositivos de entrada
+            device_name = device['name']
+            
+            # Filtro mais restrito: pega apenas o primeiro "Microfone (Realtek)" e "Mixagem estéreo"
+            if ("Microfone (Realtek" in device_name or 
+                "Mixagem estéreo" in device_name) and device_name not in added_device_names:
+                
+                unique_input_devices.append({'id': i, 'name': device_name})
+                added_device_names.add(device_name)  # Marca como adicionado para evitar duplicatas
+
+    return render_template('main.html', devices=unique_input_devices, selected_device=selected_device if selected_device is not None else "Nenhum")
+
+
 
 @app.route('/set_device/<int:device_id>')
 def set_device(device_id):
