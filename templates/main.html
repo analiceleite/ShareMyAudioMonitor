@@ -340,12 +340,12 @@
 
     <div id="volume-bar-container">
       <div id="volume-indicators">
-        <div class="indicator">100</div>
-        <div class="indicator">80</div>
-        <div class="indicator">60</div>
-        <div class="indicator">40</div>
-        <div class="indicator">20</div>
-        <div class="indicator">0</div>
+        <div class="indicator">100% -</div>
+        <div class="indicator">80% -</div>
+        <div class="indicator">60% -</div>
+        <div class="indicator">40% -</div>
+        <div class="indicator">20% -</div>
+        <div class="indicator">0% -</div>
       </div>
       <div id="volume-bar">
         <div id="volume-level"></div>
@@ -358,7 +358,7 @@
   </footer>
 
   <script>
-    let volumeUpdateInterval = 500; // Valor padrão de 500 ms
+    let volumeUpdateInterval = 100; // Valor padrão de 500 ms
     let volumeIntervalId; // Variável para armazenar o ID do intervalo
 
     function updateVolume() {
@@ -370,7 +370,7 @@
           const volumeLevel = document.getElementById("volume-level");
           volumeLevel.style.height = height + "%";
 
-          if (height <= 80) {
+          if (height <= 60) {
             volumeLevel.style.backgroundColor = "#4caf50"; // Verde
           } else if (height <= 95) {
             volumeLevel.style.backgroundColor = "#ffeb3b"; // Amarelo

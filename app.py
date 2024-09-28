@@ -13,7 +13,13 @@ def audio_callback(indata, frames, time, status):
     global volume_level
     if status:
         print(status)
-    volume_level = np.linalg.norm(indata) * 10
+    volume_level = np.linalg.norm(indata) * 230
+    volume_level_last = volume_level
+    if volume_level > 20:
+        volume_level = 20.0
+    elif volume_level > 9:
+        volume_level = 9.0
+    print(volume_level)
 
 def audio_stream():
     global selected_device, stream
