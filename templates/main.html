@@ -89,6 +89,7 @@
       align-items: flex-end;
       justify-content: center;
       color: #ddd;
+      font-weight: bold;
     }
 
     #volume-bar {
@@ -105,7 +106,7 @@
       background-color: #4caf50;
       height: 0;
       border-radius: 5px;
-      transition: height 0.3s ease;
+      transition: height 0.6s ease;
     }
 
     .device-list {
@@ -340,12 +341,12 @@
 
     <div id="volume-bar-container">
       <div id="volume-indicators">
-        <div class="indicator">100% -</div>
-        <div class="indicator">80% -</div>
-        <div class="indicator">60% -</div>
-        <div class="indicator">40% -</div>
-        <div class="indicator">20% -</div>
-        <div class="indicator">0% -</div>
+        <div class="indicator" style="color: red">100% -</div>
+        <div class="indicator" style="color: yellow">80% -</div>
+        <div class="indicator" style="color: yellow">60% -</div>
+        <div class="indicator" style="color: green">40% -</div>
+        <div class="indicator" style="color: green">20% -</div>
+        <div class="indicator" style="color: green">0% -</div>
       </div>
       <div id="volume-bar">
         <div id="volume-level"></div>
