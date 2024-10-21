@@ -1,2 +1,2 @@
 @echo off
-start /B pythonw C:\Users\IGREJAPV\Documents\luis\ShareMyAudioMonitor\app.pyw
+start /B pythonw C:\Users\IGREJAPV\Documents\luis\ShareMyAudioMonitor\app.py
