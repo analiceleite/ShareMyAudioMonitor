@@ -5,9 +5,10 @@ import threading
 import time
 
 app = Flask(__name__)
-volume_level = 0
+paused = True
+volume_level = -200
 selected_device = None
-stream = None 
+stream = None
 SAMPLING_RATE = 48000.0
 DISPOSITIVOS_PERMITIDOS = ['Virtual']
 
@@ -27,11 +28,19 @@ def audio_callback(indata, frames, time, status):
 
 def audio_stream():
     global selected_device, stream
-    print(selected_device)
-    stream = sd.InputStream(samplerate=SAMPLING_RATE, channels=1, dtype='float32', callback=audio_callback, device=selected_device)
-    stream.start() 
     while True:
-        time.sleep(1000)
+        try:
+            stream = sd.InputStream(samplerate=SAMPLING_RATE, channels=1, dtype='float32', callback=audio_callback, device=selected_device)
+            stream.start()
+            while True:
+                time.sleep(1)  # Ajuste o tempo de sono conforme necessário
+        except Exception as e:
+            print(f"Erro no stream: {e}")
+            if stream is not None:
+                stream.stop()
+                stream.close()
+                stream = None
+            time.sleep(1)  # Aguarde um segundo antes de tentar novamente
 
 @app.route('/')
 def index():
@@ -56,17 +65,20 @@ def index():
     print(dispositivos_filtrados)
     return render_template('main.html', devices=dispositivos_filtrados, selected_device=selected_device if selected_device is not None else "Nenhum")
 
-
 @app.route('/set_device/<int:device_id>')
 def set_device(device_id):
-    global selected_device
-    selected_device = device_id
-    threading.Thread(target=audio_stream, daemon=True).start()
+    global selected_device, paused
+    paused = False
+    if not device_id == selected_device:
+        selected_device = device_id
+        threading.Thread(target=audio_stream, daemon=True).start()
     return jsonify(success=True)
 
 @app.route('/stop_capture', methods=['POST'])
 def stop_capture():
     global stream, selected_device
+    global paused
+    paused = True
     if stream is not None:
         print("Parando a captação...")
         stream.stop()
@@ -78,6 +90,9 @@ def stop_capture():
 
 @app.route('/get_volume')
 def get_volume():
+    global paused, volume_level
+    if paused is True:
+        volume_level = -200
     return jsonify(volume=float(volume_level))
 
 @app.route('/get_selected_device')
@@ -85,4 +100,13 @@ def get_selected_device():
     return jsonify(device=selected_device)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug= True)
+    while True:
+        try:
+            app.run(host='0.0.0.0', port=5000, debug=True)
+        except SystemExit:
+            # Captura o SystemExit e continua o loop
+            print("O servidor Flask foi encerrado. Tentando reiniciar...")
+            time.sleep(1)  # Aguarde um segundo antes de tentar novamente
+        except Exception as e:
+            print(f"Erro na execução da aplicação: {e}")
+            time.sleep(1)
