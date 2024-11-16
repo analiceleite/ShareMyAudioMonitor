@@ -103,7 +103,7 @@ def get_selected_device():
 
 @app.route('/restart')
 def restart_server():
-    os.execv(sys.executable, ['python'] + sys.argv) 
+    os.execv(sys.executable, ['python'] + sys.argv)
     return jsonify(success=True)
 
 if __name__ == '__main__':

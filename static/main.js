@@ -80,15 +80,15 @@ function restartApp() {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        alert("Servidor reiniciado com sucesso!");
-        location.reload();
+        console.success("Servidor reiniciado com sucesso!");
       } else {
-        alert("Erro ao tentar reiniciar o servidor.");
+        console.error("Erro ao tentar reiniciar o servidor.");
       }
     })
     .catch(error => {
       console.error('Erro:', error);
     });
+  location.reload();
 }
 
 volumeIntervalId = setInterval(updateVolume, volumeUpdateInterval);
