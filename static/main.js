@@ -73,4 +73,22 @@ function updateVolumeInterval() {
   volumeIntervalId = setInterval(updateVolume, volumeUpdateInterval);
 }
 
+function restartApp() {
+  fetch('/restart', {
+    method: 'GET', // Usando GET para simplificar
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert("Servidor reiniciado com sucesso!");
+        location.reload();
+      } else {
+        alert("Erro ao tentar reiniciar o servidor.");
+      }
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+    });
+}
+
 volumeIntervalId = setInterval(updateVolume, volumeUpdateInterval);

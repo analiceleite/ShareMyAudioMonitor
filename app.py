@@ -3,6 +3,8 @@ import sounddevice as sd
 import numpy as np
 import threading
 import time
+import os
+import sys
 
 app = Flask(__name__)
 paused = True
@@ -10,7 +12,7 @@ volume_level = -200
 selected_device = None
 stream = None
 SAMPLING_RATE = 48000.0
-DISPOSITIVOS_PERMITIDOS = ['Virtual']
+DISPOSITIVOS_PERMITIDOS = ['Share']
 
 def calcular_db(audio_data):
     rms = np.sqrt(np.mean(np.square(audio_data)))  # Root Mean Square (RMS)
@@ -99,14 +101,18 @@ def get_volume():
 def get_selected_device():
     return jsonify(device=selected_device)
 
+@app.route('/restart')
+def restart_server():
+    os.execv(sys.executable, ['python'] + sys.argv) 
+    return jsonify(success=True)
+
 if __name__ == '__main__':
     while True:
         try:
             app.run(host='0.0.0.0', port=5000, debug=True)
         except SystemExit:
-            # Captura o SystemExit e continua o loop
             print("O servidor Flask foi encerrado. Tentando reiniciar...")
-            time.sleep(1)  # Aguarde um segundo antes de tentar novamente
+            time.sleep(1) 
         except Exception as e:
             print(f"Erro na execução da aplicação: {e}")
             time.sleep(1)
